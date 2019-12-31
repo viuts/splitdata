@@ -1,7 +1,7 @@
 {
   "name": "splitdata",
   "description": "split image dataset",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "author": "Allen Ng @viuts",
   "bin": {
     "splitdata": "./bin/run"
