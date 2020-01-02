@@ -19,7 +19,7 @@ $ npm install -g splitdata
 $ splitdata COMMAND
 running command...
 $ splitdata (-v|--version|version)
-splitdata/0.0.0 darwin-x64 node-v8.9.4
+splitdata/0.0.1 darwin-x64 node-v8.9.4
 $ splitdata --help [COMMAND]
 USAGE
   $ splitdata COMMAND
