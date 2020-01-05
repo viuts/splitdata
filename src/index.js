@@ -2,6 +2,7 @@ const {Command, flags} = require('@oclif/command')
 const fs = require('fs')
 const glob = require('glob')
 const async = require('async')
+const _ = require('lodash')
 
 const CONCURRECY = 50
 
@@ -24,7 +25,15 @@ class SplitdataCommand extends Command {
       this.log('sum of percentage need to be 1')
     }
 
-    const files = await this.readDir(flags.input, flags.recursive)
+    let files = await this.readDir(flags.input, flags.recursive)
+
+    if (flags.shuffle) {
+      files = _.shuffle(files)
+    }
+
+    if (flags.sample < 1 && flags.sample > 0) {
+      files = _.take(files, Math.floor(files.length * flags.sample))
+    }
 
     // get the actual files list need to be move
     const totalLength = files.length
@@ -51,7 +60,7 @@ class SplitdataCommand extends Command {
       fs.mkdirSync(folder)
       await async.eachLimit(files, CONCURRECY, async file => {
         await new Promise(resolve => {
-          fs.rename(file, `${folder}/${file.split('/').pop()}`, resolve)
+          fs.copyFile(file, `${folder}/${file.split('/').pop()}`, resolve)
         })
       })
     }), Promise.resolve())
@@ -90,7 +99,8 @@ SplitdataCommand.flags = {
   help: flags.help({char: 'h'}),
   input: flags.string({char: 'i', description: 'input folder'}),
   recursive: flags.boolean({char: 'r', description: 'process recursively'}),
-  sample: flags.string({char: 's', description: 'sample size to take out from dataset'}),
+  sample: flags.string({char: 's', description: 'sample size to take out from dataset', default: 1}),
+  shuffle: flags.boolean({char: 'z', description: 'shuffle dataset', default: true}),
 }
 
 module.exports = SplitdataCommand
